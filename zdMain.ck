@@ -1,6 +1,16 @@
-MidiIn midiReceiver;
-midiReceiver.open( 2 ) => int AmIOpen;
+// import multiSampler
+@import "ZeroSampler.ck";
 
+MidiIn midiReceiver;
+midiReceiver.open( 1 ) => int AmIOpen;
+
+// !!!!! WE NEED A SECOND RECEIVER FOR THE HEATFX
+
+// the samnstruments
+ZdSampler bass(3 , me.dir() + "samples/bass") => dac;
+ZdSampler kick(1 , me.dir() + "samples/kick") => dac;
+ZdSampler snare(2 , me.dir() + "samples/snare") => dac;
+ZdSampler ch(5 , me.dir() + "samples/ch") => dac;
 //variables
 0.2 => float cubeX;
 0.1 => float cubeY;
@@ -34,17 +44,30 @@ if (msg.data1 == 184 && msg.data2 == 21) {
   
 }
 
-// midi note out on channel 9 (kick)
-if (msg.data1 == 152) {
+// midi note out on channel 1 (kick)
+if (msg.data1 == 144) {
+  // when noteOn 
   ((msg.data2) - 50) / 2.0  => cubeY;
   ((msg.data2) - 50) / 2.0  => cubeColor;
   (msg.data3 )   / 130.0  => cubeSize;
 }
 
-// midi note out on channel 10 (snare)
-if (msg.data1 == 153) {
- 
+if (msg.data1 == 128) {
+  // when noteOff
+  0.0 => cubeY;
+  0.0  => cubeColor;
+  0.0  => cubeSize;
+}
+
+// midi note out on channel 2 (snare)
+if (msg.data1 == 145) {
+ //noteOn
   (msg.data3)  => cubeRed;
+}
+
+if (msg.data1 == 129) {
+ //noteOff
+  0 => cubeRed;
 }
 // midi note out on channel 13 (pad)
 if (msg.data1 == 156) {
@@ -59,21 +82,29 @@ fun void receiveMIDI() {
    midiReceiver => now;
   while( midiReceiver.recv(msg) ){
   <<<msg.data1,msg.data2,msg.data3,"MIDI Message">>>;
-   <<< "bgColor" , bgColor >>>;
+  //  <<< "bgColor" , bgColor >>>;
     parseMIDI(msg);
+  // play instruments 
+  msg => bass.midiIn;
+  msg => kick.midiIn;
+  msg => snare.midiIn;
+  msg => ch.midiIn;
+
   }
   }
 }
 
 // add to scene
 
-GCube cube --> GG.scene(); 
+GSuzanne cube --> GG.scene(); 
 GG.camera().perspective();
 vec3 v;
-v.set(0.1 , 0.2 , 0.3);
+v.set(0.0, 0.0 , 0.0);
 
 fun void play() {}
 spork ~ receiveMIDI();
+
+
 while (true) {
     update();
     GG.nextFrame() => now;
@@ -84,8 +115,8 @@ while (true) {
     GG.camera().rot(@(-0.3, 0.1 , cameraZ));
 
     //cube
-    cube.rotX(cubeX);
-    cube.rotY(cubeY);
+    // cube.rotX(cubeX);
+    // cube.rotY(cubeY);
     cube.color(@(cubeRed , cubeColor , 0));
     cube.pos(@(-1.8 , 0, -0.2));
     cube.sca(@(cubeSize , cubeSize , cubeSize));
