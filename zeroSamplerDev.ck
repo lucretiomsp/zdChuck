@@ -8,8 +8,8 @@ me.dir() + "samples/subBass.wav" , me.dir() + "samples/synthPad172.wav"] @=> str
 // MY SAMPLER CLASS
 public class Simone extends Chugraph {
     ADSR env;
-    SndBuf smplPl => env outlet;
-    env.set(3::ms , 180::ms , 1 , 120::ms);
+    SndBuf smplPl => env =>  outlet;
+    env.set(1::ms , 380::ms , 1 , 120::ms);
     0.4 => smplPl.gain;
     1 => smplPl.rate;
 
@@ -41,18 +41,18 @@ if (msg.data1 == (143 + midiChannel)) {
     Math.pow(2, (msg.data2 - 60) / 12.0) => smplPl.rate;
     0 => smplPl.pos;
     env.keyOn();
-    <<<"CANE">>>;
+    
 }
 // noteOFF must be implemented
 if (msg.data1 == (127 + midiChannel)) {
 env.keyOff();
 
 }
-/// cc20 changes index
-if (msg.data1 == (175 + midiChannel && msg.data2 == 20)) {
+/// cc19 changes index
+if (msg.data1 == 175 + midiChannel && msg.data2 == 19) {
     filePrefix + files[msg.data3 % 3] => smplPl.read;
     
-   //  <<< files[msg.data3 % 3 ]  >>>;  
+   <<< files[msg.data3 % 3 ]  >>>;  
 }
 }
 // end of class declaration
@@ -81,7 +81,7 @@ fun void receiveMIDI() {
   while( true) {
    midiReceiver => now;
   while( midiReceiver.recv(msg) ){
- // <<<msg.data1,msg.data2,msg.data3,"MIDI Message">>>;
+  //  <<<msg.data1,msg.data2,msg.data3,"MIDI Message">>>;
    msg => buf.midiIn;
    //parseMIDIInput(msg);
   }
