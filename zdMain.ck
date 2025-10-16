@@ -2,24 +2,30 @@
 @import "ZeroSampler.ck";
 
 //my 3dModels
-// GModel fabri(me.dir() + "3dModels/fabri3d.obj");
+GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
+
+
 
 MidiIn midiReceiver;
 midiReceiver.open( 1 ) => int AmIOpen;
 
+// heatFX
+MidiIn heatFX;
+heatFX.open(2) => int fxOpen;
 // !!!!! WE NEED A SECOND RECEIVER FOR THE HEATFX
 
 // the istruments
 ZdSampler bass(3 , me.dir() + "samples/bass") => dac;
 ZdSampler kick(1 , me.dir() + "samples/kick") => dac;
 ZdSampler snare(2 , me.dir() + "samples/snare") => dac;
-ZdSampler perc(2 , me.dir() + "samples/perc") => dac;
+ZdSampler perc(4 , me.dir() + "samples/percs") => dac;
 ZdSampler ch(5 , me.dir() + "samples/ch") => dac;
 
 // the envelopes
 ADSR envK(1::ms , 180::ms , 0.3 , 190::ms) => blackhole;
 ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
 //variables
+
 0.2 => float torusX;
 0.1 => float torusY;
 0.0 => float torusRed;
@@ -27,6 +33,12 @@ ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
 0.0 => float torusSize;
 0.0 => float torusRotY;
 
+// cube
+0.0 => float cubcol;
+0.0 => float cubSize;
+
+
+// camera
 0.0 => float cameraZ;
 
 0.0 => float bgColor;
@@ -77,7 +89,7 @@ if (msg.data1 == 145) {
  //noteOn
   //(msg.data3)  => torusRed;
   0.09 + torusRotY => torusRotY;
-  <<< "ruota = " + torusRotY >>>;
+  // <<< "ruota = " + torusRotY >>>;
   envSn.keyOn();
 
 }
@@ -85,7 +97,8 @@ if (msg.data1 == 145) {
 if (msg.data1 == 129) {
  //noteOff
   0 => torusRed;
-  envSn.keyOn();
+  envSn.keyOff();
+  <<< "cane" >>> ;
 }
 // midi note out on channel 13 (pad)
 if (msg.data1 == 156) {
@@ -117,12 +130,18 @@ GWindow.title("Zero Degrees - ADC25 - Bristol");
 GWindow.windowed(600 , 900);
 
 // add to scene
-
+lighthouse --> GG.scene();
 GTorus torus --> GG.scene(); 
+// GCube cubeSn --> torus;
+GCube cubeSn --> GG.scene();
+
+
+lighthouse.sca(@(0.7, 0.7 , 0.7));
+lighthouse.pos(@(1.8 , - 3.6 , 0));
+lighthouse.rotX(0.9);
  
-GG.camera().perspective();
-vec3 v;
-v.set(0.0, 0.0 , 0.0);
+GG.camera().orthographic();
+
 
 fun void play() {}
 spork ~ receiveMIDI();
@@ -136,20 +155,29 @@ while (true) {
     // background
     // GG.scene().backgroundColor(@(0 , 0  , Math.random2f(0.1 , 0.98)));
     //camera
-    GG.camera().rot(@(-0.3, 0.1 , cameraZ));
+
+    // GG.camera().rot(@(-0.3, 0.1 , cameraZ));
 
     //torus
     torus.rotY(torusRotY);
     // torus.rotY(torusY);
     
-    envK.value() * 1 => torusSize;
+    1 + envK.value() * 1 => torusSize;
     envK.value() * 20 => torusRed;
-    envK.value() * 3 => torusColor;
+    1 + envK.value() * 3 => torusColor;
     
-
+    // torus is the kick
     torus.color(@(torusRed , torusColor , 0));
-    torus.pos(@(-0.6 , - 1.2, -0.2));
+    torus.pos(@(0.0 , 0.0, 0.0));
     torus.sca(@(torusSize , torusSize , torusSize));
+
+    // cube is the snare
+    envSn.value() =>  cubcol;
+    envSn.value() * 0.7 => cubSize;
+    cubeSn.rotZ(torusRotY);
+    cubeSn.sca(@(cubSize , cubSize , cubSize));
+    cubeSn.pos(@(0.0 , 0.0, 0.0));
+    cubeSn.color(@(0 , cubcol ,0 ));
     
    
      // draw UI
@@ -157,6 +185,8 @@ while (true) {
       // scenegraph view of the current scene
       UI.scenegraph(GG.scene()); 
    }
+
+   
    UI.end(); // end of UI window, must match UI.begin(...)
    
 }
