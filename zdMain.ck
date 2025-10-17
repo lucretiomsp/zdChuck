@@ -1,5 +1,6 @@
 // import multiSampler
 @import "ZeroSampler.ck";
+@import "heatFXmin.ck";
 
 //my 3dModels
 GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
@@ -9,10 +10,8 @@ GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
 MidiIn midiReceiver;
 midiReceiver.open( 1 ) => int AmIOpen;
 
-// heatFX
-MidiIn heatFX;
-heatFX.open(2) => int fxOpen;
-// !!!!! WE NEED A SECOND RECEIVER FOR THE HEATFX
+HeatFXInput heat;
+
 
 // the istruments
 ZdSampler bass(3 , me.dir() + "samples/bass") => dac;
@@ -141,8 +140,8 @@ lighthouse.pos(@(1.8 , - 3.6 , 0));
 lighthouse.rotX(0.9);
  
 GG.camera().orthographic();
-
-
+GG.scene().light().rot(@(-0.6 , 0.7 , 0.4));
+GG.scene().light().intensity(4);
 fun void play() {}
 spork ~ receiveMIDI();
 
@@ -168,7 +167,7 @@ while (true) {
     
     // torus is the kick
     torus.color(@(torusRed , torusColor , 0));
-    torus.pos(@(0.0 , 0.0, 0.0));
+    torus.pos(@(-0.15 , 0.0, 0.0));
     torus.sca(@(torusSize , torusSize , torusSize));
 
     // cube is the snare
@@ -181,7 +180,7 @@ while (true) {
     
    
      // draw UI
-   if (UI.begin("Tutorial")) {  // draw a UI window called "Tutorial"
+   if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
       // scenegraph view of the current scene
       UI.scenegraph(GG.scene()); 
    }

@@ -1,0 +1,32 @@
+// Doemnico Cipriani 2025
+// Utility class to parse Midi Input from Analog Heatx
+// By default is receiving on channel 15
+@import "zdMidiUtil.ck";
+
+public class HeatFXInput {
+127 => int cutoffValue; 
+MidiIn heatMin;
+heatMin.open(2) => int fxOpen;
+    
+ZdMidiMsg heatMsg;
+
+
+// receive the MIDI
+fun void receiveMIDI() {
+  <<< "HeatFX receives MIDI" >>>;  
+  while( true) {
+   heatMin => now;
+  while( heatMin.recv(heatMsg) ){
+    <<< "MSG from Heat FX : " + heatMsg.data1 , heatMsg.data2 , heatMsg.data3 >>>;
+    parseMIDI(heatMsg);
+    }
+  }
+}
+
+// parse the MIDI
+fun void parseMIDI(ZdMidiMsg msg){
+
+}
+// spork reception
+spork ~receiveMIDI();
+}
