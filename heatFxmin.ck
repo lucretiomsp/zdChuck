@@ -4,7 +4,7 @@
 @import "zdMidiUtil.ck";
 
 public class HeatFXInput {
-127 => float cutoffValue; 
+0.0 => float cutoffValue; 
 MidiIn heatMin;
 heatMin.open(2) => int fxOpen;
     

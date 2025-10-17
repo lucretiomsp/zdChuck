@@ -128,16 +128,22 @@ fun void receiveMIDI() {
 GWindow.title("Zero Degrees - ADC25 - Bristol");
 GWindow.windowed(600 , 900);
 
+
+// ###############################
 // add to scene
 lighthouse --> GG.scene();
-GTorus torus --> GG.scene(); 
+GTorus torus -->   GG.scene(); 
 // GCube cubeSn --> torus;
-GCube cubeSn --> GG.scene();
+GCube cubeSn --> lighthouse;
+//####################################
 
+torus.pos(@(0 , 0.0, 0.0));
+
+cubeSn.pos(@(0.0 , 7.0, 0.0));
 
 lighthouse.sca(@(0.7, 0.7 , 0.7));
 lighthouse.pos(@(1.8 , - 3.6 , 0));
-lighthouse.rotX(0.9);
+// lighthouse.rotX(0.9);
  
 GG.camera().orthographic();
 
@@ -152,6 +158,7 @@ while (true) {
     GG.nextFrame() => now;
     GG.scene().light().rot(@(-0.6 , 0.7 , heat.cutoffValue));
     GG.scene().light().intensity(3 - heat.cutoffValue);
+    // GG.camera().rot(@(0 , 0,  heat.cutoffValue));
     // background
     // GG.scene().backgroundColor(@(0 , 0  , Math.random2f(0.1 , 0.98)));
     //camera
@@ -169,7 +176,7 @@ while (true) {
     
     // torus is the kick
     torus.color(@(torusRed , torusColor , 0));
-    torus.pos(@(-0.15 , 0.0, 0.0));
+    
     torus.sca(@(torusSize , torusSize , torusSize));
 
     // cube is the snare
@@ -177,12 +184,12 @@ while (true) {
     envSn.value() * 0.7 => cubSize;
     cubeSn.rotZ(torusRotY);
     cubeSn.sca(@(cubSize , cubSize , cubSize));
-    cubeSn.pos(@(0.0 , 0.0, 0.0));
+    
     cubeSn.color(@(cubcol * 2 , 0 ,0 ));
 
 
     // lighthouse
-    lighthouse.rotY(heat.cutoffValue);
+    lighthouse.rotY(-1 * heat.cutoffValue);
     
    
      // draw UI
