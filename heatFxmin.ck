@@ -4,11 +4,12 @@
 @import "zdMidiUtil.ck";
 
 public class HeatFXInput {
-127 => int cutoffValue; 
+127 => float cutoffValue; 
 MidiIn heatMin;
 heatMin.open(2) => int fxOpen;
     
 ZdMidiMsg heatMsg;
+
 
 
 // receive the MIDI
@@ -17,7 +18,7 @@ fun void receiveMIDI() {
   while( true) {
    heatMin => now;
   while( heatMin.recv(heatMsg) ){
-    <<< "MSG from Heat FX : " + heatMsg.data1 , heatMsg.data2 , heatMsg.data3 >>>;
+  //  <<< "MSG from Heat FX : " + heatMsg.data1 , heatMsg.data2 , heatMsg.data3 >>>;
     parseMIDI(heatMsg);
     }
   }
@@ -25,6 +26,13 @@ fun void receiveMIDI() {
 
 // parse the MIDI
 fun void parseMIDI(ZdMidiMsg msg){
+    if (msg.isCC()) {
+       //  <<< "CAPITANO CC" + msg.data2 >>> ;
+        
+        // cutoff frequency
+        if (msg.data2 == 22)
+        { <<< cutoffValue >>>; Math.map(msg.data3, 0 , 127 , 0 , 3 ) => cutoffValue; } 
+    }
 
 }
 // spork reception

@@ -9,7 +9,7 @@ GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
 
 MidiIn midiReceiver;
 midiReceiver.open( 1 ) => int AmIOpen;
-
+// the heat
 HeatFXInput heat;
 
 
@@ -140,8 +140,8 @@ lighthouse.pos(@(1.8 , - 3.6 , 0));
 lighthouse.rotX(0.9);
  
 GG.camera().orthographic();
-GG.scene().light().rot(@(-0.6 , 0.7 , 0.4));
-GG.scene().light().intensity(4);
+
+
 fun void play() {}
 spork ~ receiveMIDI();
 
@@ -150,7 +150,8 @@ while (true) {
     update();
     
     GG.nextFrame() => now;
-
+    GG.scene().light().rot(@(-0.6 , 0.7 , heat.cutoffValue));
+    GG.scene().light().intensity(3 - heat.cutoffValue);
     // background
     // GG.scene().backgroundColor(@(0 , 0  , Math.random2f(0.1 , 0.98)));
     //camera
@@ -159,11 +160,12 @@ while (true) {
 
     //torus
     torus.rotY(torusRotY);
+    torus.rotX(heat.cutoffValue);
     // torus.rotY(torusY);
     
-    1 + envK.value() * 1 => torusSize;
+    0 + envK.value() * 1 => torusSize;
     envK.value() * 20 => torusRed;
-    1 + envK.value() * 3 => torusColor;
+    0 + envK.value() * 3 => torusColor;
     
     // torus is the kick
     torus.color(@(torusRed , torusColor , 0));
@@ -176,7 +178,11 @@ while (true) {
     cubeSn.rotZ(torusRotY);
     cubeSn.sca(@(cubSize , cubSize , cubSize));
     cubeSn.pos(@(0.0 , 0.0, 0.0));
-    cubeSn.color(@(0 , cubcol ,0 ));
+    cubeSn.color(@(cubcol * 2 , 0 ,0 ));
+
+
+    // lighthouse
+    lighthouse.rotY(heat.cutoffValue);
     
    
      // draw UI
