@@ -19,12 +19,17 @@ ZdSampler kick(1 , me.dir() + "samples/kick") => dac;
 ZdSampler snare(2 , me.dir() + "samples/snare") => dac;
 ZdSampler perc(4 , me.dir() + "samples/percs") => dac;
 ZdSampler ch(5 , me.dir() + "samples/ch") => dac;
+ZdSampler oh(6 , me.dir() + "samples/oh") => dac;
+ZdSampler pad(7 , me.dir() + "samples/pad") => dac;
+ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
 
 // the envelopes
 ADSR envK(1::ms , 180::ms , 0.3 , 190::ms) => blackhole;
 ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
+ADSR envBass(70::ms , 120::ms , 0.6 , 1::ms) => blackhole;
 //variables
 
+// kick
 0.2 => float torusX;
 0.1 => float torusY;
 0.0 => float torusRed;
@@ -32,10 +37,17 @@ ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
 0.0 => float torusSize;
 0.0 => float torusRotY;
 
-// cube
+// snare
 0.0 => float cubcol;
 0.0 => float cubSize;
 
+// bass
+0.0 => float 
+ bassVel;
+
+
+// pad
+0.0 => float padVel;
 
 // camera
 0.0 => float cameraZ;
@@ -97,12 +109,27 @@ if (msg.data1 == 129) {
  //noteOff
   0 => torusRed;
   envSn.keyOff();
-  <<< "cane" >>> ;
 }
-// midi note out on channel 13 (pad)
+
+// ############ midi note out on channel 3 (bass)
+if (msg.data1 == 146) {
+ //noteOn
+  (msg.data3 / 127.0)  => bassVel;
+  
+  // <<< "ruota = " + torusRotY >>>;
+  envBass.keyOn();
+
+}
+
+if (msg.data1 == 130) {
+ //noteOff
+  0 => bassVel;
+  envBass.keyOff();
+}
+
+// ############ midi note out on channel 13 (pad)
 if (msg.data1 == 156) {
- 
-  (msg.data3) / 100 => bgColor;
+   (msg.data3 / 100 ) => padVel;
 }
 }
 
@@ -119,6 +146,9 @@ fun void receiveMIDI() {
   msg => kick.midiIn;
   msg => snare.midiIn;
   msg => ch.midiIn;
+  msg => oh.midiIn;
+  msg => pad.midiIn;
+  msg => vox.midiIn;
 
   }
   }
@@ -134,12 +164,17 @@ GWindow.windowed(600 , 900);
 lighthouse --> GG.scene();
 GTorus torus -->   GG.scene(); 
 // GCube cubeSn --> torus;
+
 GCube cubeSn --> lighthouse;
+GCube cubeSn2--> GG.scene(); // always visible
 //####################################
 
 torus.pos(@(0 , 0.0, 0.0));
 
 cubeSn.pos(@(0.0 , 7.0, 0.0));
+cubeSn.pos(@(0.0 , 7.0, 0.0));
+cubeSn2.rot(@(-0.3 , -0.35 , -0.2));
+cubeSn2.color(@(1, 0 , 0));
 
 lighthouse.sca(@(0.7, 0.7 , 0.7));
 lighthouse.pos(@(1.8 , - 3.6 , 0));
@@ -186,10 +221,15 @@ while (true) {
     cubeSn.sca(@(cubSize , cubSize , cubSize));
     
     cubeSn.color(@(cubcol * 2 , 0 ,0 ));
-
+    cubeSn.color(@(cubcol * 2 , 0 ,0 ));
+    
+    cubeSn2.sca(@(cubSize , cubSize , cubSize));
+    cubeSn2.pos(@(-1.3 , - 0.7 ,   0));
+    cubeSn2.rotZ(torusRotY);
 
     // lighthouse
-    lighthouse.rotY(-1 * heat.cutoffValue);
+    lighthouse.rotY(heat.cutoffValue / 2);
+    lighthouse.sca(@(0.7, 0.7 * envBass.value() * Math.sgn(Math.fabs(bass.last()) ), 0.7));
     
    
      // draw UI

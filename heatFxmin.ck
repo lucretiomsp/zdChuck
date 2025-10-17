@@ -31,7 +31,7 @@ fun void parseMIDI(ZdMidiMsg msg){
         
         // cutoff frequency
         if (msg.data2 == 22)
-        { <<< cutoffValue >>>; Math.map(msg.data3, 0 , 127 , 0 , 3 ) => cutoffValue; } 
+        { <<< cutoffValue >>>; Math.map(msg.data3, 0 , 127 , 0 , 3.14 ) => cutoffValue; } 
     }
 
 }
