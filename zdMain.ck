@@ -4,7 +4,7 @@
 
 //my 3dModels
 GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
-
+// GModel bird(me.dir() + "3dModels/12214_Bird_v1max_l3.obj");
 
 
 MidiIn midiReceiver;
@@ -27,6 +27,7 @@ ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
 ADSR envK(1::ms , 180::ms , 0.3 , 190::ms) => blackhole;
 ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
 ADSR envBass(70::ms , 120::ms , 0.6 , 1::ms) => blackhole;
+ADSR envVox(20::ms , 300::ms , 0.8 , 311::ms) => blackhole;
 //variables
 
 // kick
@@ -42,9 +43,10 @@ ADSR envBass(70::ms , 120::ms , 0.6 , 1::ms) => blackhole;
 0.0 => float cubSize;
 
 // bass
-0.0 => float 
- bassVel;
+0.0 => float bassVel;
 
+// vox
+0.0 => float voxVel;
 
 // pad
 0.0 => float padVel;
@@ -127,6 +129,23 @@ if (msg.data1 == 130) {
   envBass.keyOff();
 }
 
+
+// ############ midi note out on channel 9 (vox)
+if (msg.data1 == 152) {
+ //noteOn
+  //(msg.data3 / 127.0)  => voxVel;
+  
+  envVox.keyOn();
+
+}
+
+if (msg.data1 == 136) {
+ //noteOff
+ 
+  envVox.keyOff();
+}
+
+
 // ############ midi note out on channel 13 (pad)
 if (msg.data1 == 156) {
    (msg.data3 / 100 ) => padVel;
@@ -166,20 +185,27 @@ GTorus torus -->   GG.scene();
 // GCube cubeSn --> torus;
 
 GCube cubeSn --> lighthouse;
-GCube cubeSn2--> GG.scene(); // always visible
+GCube cubeSn2 --> GG.scene(); // always visible
+GSuzanne susy --> GG.scene();
+
+
 //####################################
 
 torus.pos(@(0 , 0.0, 0.0));
 
 cubeSn.pos(@(0.0 , 7.0, 0.0));
-cubeSn.pos(@(0.0 , 7.0, 0.0));
+
 cubeSn2.rot(@(-0.3 , -0.35 , -0.2));
 cubeSn2.color(@(1, 0 , 0));
 
 lighthouse.sca(@(0.7, 0.7 , 0.7));
 lighthouse.pos(@(1.8 , - 3.6 , 0));
 // lighthouse.rotX(0.9);
- 
+
+susy.pos(@(-2 , 2, 0));
+susy.color(@(0.0 , 0.0 , 1));
+susy.rot(@(0.0 , 0.9 , -0.2));
+
 GG.camera().orthographic();
 
 
@@ -230,11 +256,15 @@ while (true) {
     // lighthouse
     lighthouse.rotY(heat.cutoffValue / 2);
     lighthouse.sca(@(0.7, 0.7 * envBass.value() * Math.sgn(Math.fabs(bass.last()) ), 0.7));
+
+    // susy is the voice
     
-   
+
+    susy.sca(@(envVox.value() , 1 ,1));
+    
      // draw UI
    if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
-      // scenegraph view of the current scene
+      // scenegraph view of the current scene 
       UI.scenegraph(GG.scene()); 
    }
 
