@@ -17,11 +17,16 @@ HeatFXInput heat;
 ZdSampler bass(3 , me.dir() + "samples/bass") => dac;
 ZdSampler kick(1 , me.dir() + "samples/kick") => dac;
 ZdSampler snare(2 , me.dir() + "samples/snare") => dac;
-ZdSampler perc(4 , me.dir() + "samples/percs") => dac;
+ZdSampler rim(4 , me.dir() + "samples/rim") => dac;
 ZdSampler ch(5 , me.dir() + "samples/ch") => dac;
 ZdSampler oh(6 , me.dir() + "samples/oh") => dac;
 ZdSampler pad(7 , me.dir() + "samples/pad") => dac;
 ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
+ZdSampler perc(10 , me.dir() + "samples/percs") => dac;
+
+// the levels
+0.5 => ch.gain;
+0.7 => perc.gain;
 
 // the envelopes
 ADSR envK(1::ms , 180::ms , 0.3 , 190::ms) => blackhole;
@@ -168,6 +173,8 @@ fun void receiveMIDI() {
   msg => oh.midiIn;
   msg => pad.midiIn;
   msg => vox.midiIn;
+  msg => rim.midiIn;
+  msg => perc.midiIn;
 
   }
   }
@@ -260,9 +267,10 @@ while (true) {
     // susy is the voice
     
 
-    susy.sca(@(envVox.value() , 1 ,1));
+    susy.sca(@(envVox.value() , envVox.value()  , envVox.value() ));
     
      // draw UI
+     /*
    if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
       // scenegraph view of the current scene 
       UI.scenegraph(GG.scene()); 
@@ -270,5 +278,5 @@ while (true) {
 
    
    UI.end(); // end of UI window, must match UI.begin(...)
-   
+   */
 }
