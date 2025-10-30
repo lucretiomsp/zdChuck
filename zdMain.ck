@@ -239,6 +239,7 @@ GWindow.windowed(600 , 900);
 
 // ###############################
 // add to scene
+GKnot knot --> GG.scene();
 lighthouse --> GG.scene();
 GTorus torus -->   GG.scene(); 
 // GCube cubeSn --> torus;
@@ -259,6 +260,13 @@ hattys[i].color(@(0 , 1 , 0));
 }
 
 
+knot.color(@(0.9 , 0.1 , 0));
+knot.alpha(0.94);
+knot.material(NormalMaterial norm);
+knot.material().topology(1);
+<<< "MATERIAL :" , knot.material() >>>;
+// knot.material().topology(2);
+
 //####################################
 
 torus.pos(@(0 , 0.0, 0.0));
@@ -275,6 +283,8 @@ lighthouse.pos(@(1.8 , - 3.6 , 0));
 susy.pos(@(-2 , 2, 0));
 susy.color(@(0.0 , 0.0 , 1));
 susy.rot(@(0.0 , 0.9 , -0.2));
+
+
 
 GG.camera().orthographic();
 
@@ -339,7 +349,7 @@ while (true) {
     susy.sca(@(envVox.value() , envVox.value()  , envVox.value() ));
     
      // draw UI
-     /*
+     
    if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
       // scenegraph view of the current scene 
       UI.scenegraph(GG.scene()); 
@@ -347,5 +357,5 @@ while (true) {
 
    
    UI.end(); // end of UI window, must match UI.begin(...)
-   */
+   
 }
