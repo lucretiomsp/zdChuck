@@ -13,7 +13,7 @@ midiReceiver.open( 1 ) => int AmIOpen;
 HeatFXInput heat;
 
 
-// the istruments
+// the instruments
 ZdSampler bass(3 , me.dir() + "samples/bass") => dac;
 ZdSampler kick(1 , me.dir() + "samples/kick") => dac;
 ZdSampler snare(2 , me.dir() + "samples/snare") => dac;
@@ -23,6 +23,7 @@ ZdSampler oh(6 , me.dir() + "samples/oh") => dac;
 ZdSampler pad(7 , me.dir() + "samples/pad") => dac;
 ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
 ZdSampler perc(10 , me.dir() + "samples/percs") => dac;
+Clarinet renzo  => dac ; // channel 8
 
 // the levels
 0.5 => ch.gain;
@@ -33,6 +34,7 @@ ADSR envK(1::ms , 180::ms , 0.3 , 190::ms) => blackhole;
 ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
 ADSR envBass(70::ms , 120::ms , 0.6 , 1::ms) => blackhole;
 ADSR envVox(20::ms , 300::ms , 0.8 , 311::ms) => blackhole;
+ADSR envCh(1::ms , 100::ms , 0. , 211::ms) => blackhole;
 //variables
 
 // kick
@@ -46,6 +48,10 @@ ADSR envVox(20::ms , 300::ms , 0.8 , 311::ms) => blackhole;
 // snare
 0.0 => float cubcol;
 0.0 => float cubSize;
+
+//hats
+0 => int countHats;
+0 => float openCol;
 
 // bass
 0.0 => float bassVel;
@@ -135,6 +141,52 @@ if (msg.data1 == 130) {
 }
 
 
+// ############ midi note out on channel 5 (ch)
+if (msg.data1 == 148) {
+ //noteOn
+  //(msg.data3 / 127.0)  => voxVel;
+  
+  envCh.keyOn();
+  (countHats + 1 ) % 8 => countHats;
+
+}
+
+if (msg.data1 == 132) {
+ //noteOff
+ 
+  envCh.keyOff();
+}
+
+// ############ midi note out on channel 6 (oh)
+if (msg.data1 == 149) {
+  0.8 => openCol;
+
+
+}
+
+if (msg.data1 == 133) {
+ //noteOff
+ 
+  0.0 => openCol;
+}
+
+// ############ midi note out on channel 8 (clarinet renzo)
+if (msg.data1 == 151) {
+ //noteOn
+  Std.mtof(msg.data2)  => renzo.freq;
+  
+    
+    Math.random2f( 0, 9 ) => renzo.vibratoFreq;
+    0.35 => renzo.noteOn;
+
+}
+
+if (msg.data1 == 135) {
+ //noteOff
+ 
+  0.35 => renzo.noteOff;
+}
+
 // ############ midi note out on channel 9 (vox)
 if (msg.data1 == 152) {
  //noteOn
@@ -194,6 +246,17 @@ GTorus torus -->   GG.scene();
 GCube cubeSn --> lighthouse;
 GCube cubeSn2 --> GG.scene(); // always visible
 GSuzanne susy --> GG.scene();
+
+GSphere hattys [8];
+
+for (0 => int i ; i < 8 ; i++) 
+{ 
+hattys [i]--> GG.scene();
+hattys [i].sca(@( 0, 0 , 0));
+hattys[i].pos(@(-1.2 + i / 3.0  , 1.1 + i / 4.0, 0));
+hattys[i].color(@(0 , 1 , 0));
+
+}
 
 
 //####################################
@@ -259,6 +322,12 @@ while (true) {
     cubeSn2.sca(@(cubSize , cubSize , cubSize));
     cubeSn2.pos(@(-1.3 , - 0.7 ,   0));
     cubeSn2.rotZ(torusRotY);
+
+    for (0 => int i ; i < 8 ; i++) 
+    { 
+    hattys [countHats].sca(@(envCh.value() *  0.4, envCh.value() *  0.4 , envCh.value() *  0.4));
+    hattys[i].color(@(0 , 1 , openCol));
+    }
 
     // lighthouse
     lighthouse.rotY(heat.cutoffValue / 2);
