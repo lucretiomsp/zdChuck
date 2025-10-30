@@ -347,6 +347,10 @@ while (true) {
     
 
     susy.sca(@(envVox.value() , envVox.value()  , envVox.value() ));
+
+    // knot is the pad
+    knot.rotX(heat.cutoffValue);
+
     
      // draw UI
      
