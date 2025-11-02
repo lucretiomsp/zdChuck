@@ -35,6 +35,7 @@ ADSR envSn(1::ms , 120::ms , 0.0 , 180::ms) => blackhole;
 ADSR envBass(70::ms , 120::ms , 0.6 , 1::ms) => blackhole;
 ADSR envVox(20::ms , 300::ms , 0.8 , 311::ms) => blackhole;
 ADSR envCh(1::ms , 100::ms , 0. , 211::ms) => blackhole;
+ADSR envPad(50::ms , 200::ms , 0.8 , 180::ms) => blackhole;
 //variables
 
 // kick
@@ -170,6 +171,21 @@ if (msg.data1 == 133) {
   0.0 => openCol;
 }
 
+
+// ############ midi note out on channel 7 (oh)
+if (msg.data1 == 150) {
+  1 => envPad.keyOn;
+
+
+
+}
+
+if (msg.data1 == 134) {
+ //noteOff
+ 
+  1 => envPad.keyOff;
+}
+
 // ############ midi note out on channel 8 (clarinet renzo)
 if (msg.data1 == 151) {
  //noteOn
@@ -203,10 +219,7 @@ if (msg.data1 == 136) {
 }
 
 
-// ############ midi note out on channel 13 (pad)
-if (msg.data1 == 156) {
-   (msg.data3 / 100 ) => padVel;
-}
+
 }
 
 
@@ -239,8 +252,9 @@ GWindow.windowed(600 , 900);
 
 // ###############################
 // add to scene
-GKnot knot --> GG.scene();
 lighthouse --> GG.scene();
+GKnot knot --> GG.scene();
+
 GTorus torus -->   GG.scene(); 
 // GCube cubeSn --> torus;
 
@@ -341,7 +355,7 @@ while (true) {
 
     // lighthouse
     lighthouse.rotY(heat.cutoffValue / 2);
-    lighthouse.sca(@(0.7, 0.7 * envBass.value() * Math.sgn(Math.fabs(bass.last()) ), 0.7));
+    lighthouse.sca(@(0.9, 0.9 * envBass.value() * Math.sgn(Math.fabs(bass.last()) ), 0.9));
 
     // susy is the voice
     
@@ -350,9 +364,10 @@ while (true) {
 
     // knot is the pad
     knot.rotX(heat.cutoffValue);
+    knot.sca(@(0.8 * envPad.value() , 0.8 * envPad.value() , 0.8 * envPad.value()));
 
     
-     // draw UI
+     // draw UI≤\
      
    if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
       // scenegraph view of the current scene 
