@@ -37,6 +37,8 @@ ADSR envVox(20::ms , 300::ms , 0.8 , 311::ms) => blackhole;
 ADSR envCh(1::ms , 100::ms , 0. , 211::ms) => blackhole;
 ADSR envPad(50::ms , 200::ms , 0.8 , 180::ms) => blackhole;
 ADSR envLead(2::ms , 300::ms , 0.7 , 230::ms) => blackhole;
+ADSR envPerc(2::ms , 180::ms , 0 , 220::ms) => blackhole;
+ADSR envRim(3::ms , 90::ms , 0 , 160::ms) => blackhole;
 //variables
 
 // kick
@@ -143,6 +145,23 @@ if (msg.data1 == 130) {
 }
 
 
+// ############ midi note out on channel 4 (rim)
+if (msg.data1 == 147) {
+ //noteOn
+  
+  
+  // <<< "ruota = " + torusRotY >>>;
+  envRim.keyOn();
+
+}
+
+if (msg.data1 == 131) {
+ //noteOff
+  0 => bassVel;
+  envRim.keyOff();
+}
+
+
 // ############ midi note out on channel 5 (ch)
 if (msg.data1 == 148) {
  //noteOn
@@ -220,6 +239,20 @@ if (msg.data1 == 136) {
   envVox.keyOff();
 }
 
+// ############ midi note out on channel 10 (perc)
+if (msg.data1 == 153) {
+ //noteOn
+  //(msg.data3 / 127.0)  => voxVel;
+  
+  envPerc.keyOn();
+
+}
+
+if (msg.data1 == 137) {
+ //noteOff
+ 
+  envPerc.keyOff();
+}
 
 
 }
@@ -276,7 +309,20 @@ hattys[i].color(@(0 , 1 , 0));
 
 }
 
+// cylinder for perc
+GCylinder cyl --> GG.scene();
+cyl.color(@(0.9 , 0.2 , 1));
+cyl.rotX(1.4);
+cyl.rotZ(2);
+cyl.pos(@(-1.8 , -1.8 , 0));
 
+// tetraedron for rimshott
+GPolyhedron polyhed(3) --> GG.scene();
+polyhed.pos(@(0 , -2.3 , 0));
+polyhed.color(@(0.3 , 1 , 0));
+polyhed.sca(@(0.5 , 0.5 , 0.5));
+
+// knot parameters
 knot.color(@(0.9 , 0.1 , 0));
 knot.alpha(0.94);
 knot.material(NormalMaterial norm);
@@ -378,6 +424,11 @@ while (true) {
 
     // bird is the renzo clarinet
     bird.sca(@(0.085 * envLead.value(), 0.085 * envLead.value() , 0.085 *envLead.value()));
+
+    // cyl is for perc.
+    cyl.sca(@(0.7 * envPerc.value() , 0.7 * envPerc.value(), 0.8 * envPerc.value()));
+    // polyhed is for rim
+    polyhed.sca(@(0.5 * envRim.value() , 0.5 * envRim.value() , 0.5  * envRim.value() ));
     
      // draw UI
      
