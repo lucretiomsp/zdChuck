@@ -6,6 +6,7 @@ public class ZdSampler extends Chugraph {
     env.set(1::ms , 380::ms , 1 , 120::ms);
     0.4 => smplPl.gain;
     1 => smplPl.rate;
+    0 => int numSamples;
 
 string files[3];
 string filePrefix;
@@ -24,7 +25,8 @@ fun ZdSampler (int ch , string fileDir) {
     filePrefix + files[0] => smplPl.read; 
     0 => smplPl.pos;
     // <<< dir.dirList()[1] >>>;
-    <<< dir.dirList().size() >>>;
+    dir.dirList().size() => numSamples;
+    <<< "ZdSampler num of samples : " ,  dir.dirList().size() >>>;
     <<< filePrefix + files[0] >>>;
 }
 
@@ -44,7 +46,7 @@ env.keyOff();
 }
 /// cc19 changes index
 if (msg.data1 == 175 + midiChannel && msg.data2 == 19) {
-    filePrefix + files[msg.data3 % 3] => smplPl.read;
+    filePrefix + files[msg.data3 % numSamples] => smplPl.read;
     
    // <<< files[msg.data3 % 3 ]  >>>;  
 }

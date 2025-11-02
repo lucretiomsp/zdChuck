@@ -4,7 +4,7 @@
 
 //my 3dModels
 GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
-// GModel bird(me.dir() + "3dModels/12214_Bird_v1max_l3.obj");
+GModel bird(me.dir() + "3dModels/12214_Bird_v1max_l3.obj");
 
 
 MidiIn midiReceiver;
@@ -36,6 +36,7 @@ ADSR envBass(70::ms , 120::ms , 0.6 , 1::ms) => blackhole;
 ADSR envVox(20::ms , 300::ms , 0.8 , 311::ms) => blackhole;
 ADSR envCh(1::ms , 100::ms , 0. , 211::ms) => blackhole;
 ADSR envPad(50::ms , 200::ms , 0.8 , 180::ms) => blackhole;
+ADSR envLead(2::ms , 300::ms , 0.7 , 230::ms) => blackhole;
 //variables
 
 // kick
@@ -193,14 +194,15 @@ if (msg.data1 == 151) {
   
     
     Math.random2f( 0, 9 ) => renzo.vibratoFreq;
-    0.35 => renzo.noteOn;
+    0.27 => renzo.noteOn;
+    1 => envLead.keyOn;
 
 }
 
 if (msg.data1 == 135) {
  //noteOff
- 
   0.35 => renzo.noteOff;
+  1 => envLead.keyOff;
 }
 
 // ############ midi note out on channel 9 (vox)
@@ -254,6 +256,7 @@ GWindow.windowed(600 , 900);
 // add to scene
 lighthouse --> GG.scene();
 GKnot knot --> GG.scene();
+bird --> GG.scene();
 
 GTorus torus -->   GG.scene(); 
 // GCube cubeSn --> torus;
@@ -298,8 +301,15 @@ susy.pos(@(-2 , 2, 0));
 susy.color(@(0.0 , 0.0 , 1));
 susy.rot(@(0.0 , 0.9 , -0.2));
 
+// bird
+bird.sca(@(0.085 , 0.085 , 0.085));
+bird.pos(@(1.6 , 2.1 , 0));
+bird.rotX(-2.0);
+//bird.color(@(0 , 1 , 0));
+bird.rotZ(0.4);
 
 
+// camera
 GG.camera().orthographic();
 
 
@@ -366,8 +376,11 @@ while (true) {
     knot.rotX(heat.cutoffValue);
     knot.sca(@(0.8 * envPad.value() , 0.8 * envPad.value() , 0.8 * envPad.value()));
 
+    // bird is the renzo clarinet
+    bird.sca(@(0.085 * envLead.value(), 0.085 * envLead.value() , 0.085 *envLead.value()));
     
-     // draw UI≤\
+     // draw UI
+     
      
    if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
       // scenegraph view of the current scene 
