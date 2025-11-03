@@ -294,6 +294,7 @@ GWindow.windowed(600 , 900);
 
 // ###############################
 // add to scene
+GText text --> GG.scene();
 lighthouse --> GG.scene();
 GKnot knot --> GG.scene();
 bird --> GG.scene();
@@ -364,10 +365,10 @@ bird.rotZ(0.4);
 
 // text is for delay amount
 // create a GText GGen
-GText text --> GG.scene();
-// set text size
-text.size(.1);
+
+
 // set default text to render
+/*
 text.text(
 "10100010110001011000010101010111001101111100011110110001000101100110000100010110000101110100101
 100000101001011101100010000110100010110100101001101101011001101001110101110110000100101100001101
@@ -388,12 +389,42 @@ text.text(
 011100100011011001001010100010000100010011100110101001100010100001100101010010110110011000100101
 "
 );
+*/
+text.text(
+"It was longer than the squire imagined ere we were ready for the sea, 
+and none of our first plans — 
+not even Dr. Livesey’s, of keeping me beside him — 
+could be carried out as we intended. The doctor 
+had to go to London for a physician to take charge of his practice; 
+the squire was hard at work at Bristol; and I lived on at the hall under the charge of old Redruth, 
+the gamekeeper, almost a prisoner, but full of sea-dreams and the most charming anticipations 
+of strange islands and adventures.I brooded by the hour together over the map, all the details of which 
+I well remembered. Sitting by the fire in the housekeeper’s room, I approached that islandin my fancy from every possible 
+direction; I explored every acre of its surface; 
+I climbed a thousand times to that tall hill they call the Spy-glass, and from the top
+enjoyed the most wonderful and changing prospects. Sometimes the isle was thick with savages, 
+with whom we fought, sometimes full of dangerous animals that hunted us, 
+but in all my fancies nothing occurred to me so strange and tragic as our actual adventures.
+So the weeks passed on, till one fine day there came a letter addressed to Dr. Livesey, 
+with this addition, “To be opened, in the case of his absence, by Tom
+Redruth or young Hawkins.” Obeying this order, we found, or rather I found — 
+for the gamekeeper was a poor hand at reading anything but print — the following important news: 
+Old Anchor Inn, Bristol, March 1, 17 — Dear Livesey — 
+As I do not know whether you are  at the hall or still in London, I send this in double to both places.
+The ship is bought and fitted. She lies at anchor, ready for sea. You never imagined a sweeter schooner — a child might sail her — two hundred tons; name,
+HISPANIOLA. I got her through my old friend, Blandly, who has proved himself throughout the
+most surprising trump. The admirable fellow literally slaved in my interest, and so, I may say, 
+did everyone in Bristol, as soon as they got wind of the port we sailed for— treasure, I mean. 
+"
+);
 
 text.antialias(5); // delay time
-text.color(@(0 , 1 , 0)); 
+text.color(@(1 , 1 , 1 , 1.4)); 
 text.sca(@(2 , 2 , 2));
+
 text.size(0.401); // delayamount
 text.spacing(0.418); //delay feedback
+text.font("chugl:proggy-tiny");
 
 // camera
 GG.camera().orthographic();
@@ -464,7 +495,7 @@ while (true) {
 
     // bird is the renzo clarinet
     bird.sca(@(0.085 * envLead.value(), 0.085 * envLead.value() , 0.085 *envLead.value()));
-
+    bird.rotY(heat.cutoffValue);
     // cyl is for perc.
     cyl.sca(@(0.7 * envPerc.value() , 0.7 * envPerc.value(), 0.8 * envPerc.value()));
     // polyhed is for rim
@@ -474,6 +505,8 @@ while (true) {
     // text
     text.sca(@(heat.delayAmtValue , heat.delayAmtValue ,  heat.delayAmtValue ));
     text.antialias(heat.delayTimeValue);
+    text.spacing(0.718 - heat.delayFbValue);
+    text.rotY(heat.cutoffValue / 2);
     
      // draw UI
      

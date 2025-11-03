@@ -7,6 +7,7 @@ public class HeatFXInput {
 0.0 => float cutoffValue;
 0.0 => float delayAmtValue; 
 0.0 => float delayTimeValue; 
+0.0 => float delayFbValue; 
 MidiIn heatMin;
 heatMin.open(2) => int fxOpen;
     
@@ -42,6 +43,10 @@ fun void parseMIDI(ZdMidiMsg msg){
         // delayTime
         if (msg.data2 == 107)
         { (msg.data3  / 3.0) => delayTimeValue; } 
+
+        // delayTime
+        if (msg.data2 == 110)
+        { Math.map(msg.data3, 0 , 127 , 0 , 0.300 ) => delayFbValue; } 
     }
 
 }
