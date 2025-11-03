@@ -4,7 +4,9 @@
 @import "zdMidiUtil.ck";
 
 public class HeatFXInput {
-0.0 => float cutoffValue; 
+0.0 => float cutoffValue;
+0.0 => float delayAmtValue; 
+0.0 => float delayTimeValue; 
 MidiIn heatMin;
 heatMin.open(2) => int fxOpen;
     
@@ -31,7 +33,15 @@ fun void parseMIDI(ZdMidiMsg msg){
         
         // cutoff frequency
         if (msg.data2 == 22)
-        { <<< cutoffValue >>>; Math.map(msg.data3, 0 , 127 , 0 , 3.14 ) => cutoffValue; } 
+        {  Math.map(msg.data3, 0 , 127 , 0 , 3.14 ) => cutoffValue; } 
+        
+        // delayAmount
+        if (msg.data2 == 113)
+        { (msg.data3  / 32.0) => delayAmtValue; } 
+
+        // delayTime
+        if (msg.data2 == 107)
+        { (msg.data3  / 3.0) => delayTimeValue; } 
     }
 
 }

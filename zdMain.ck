@@ -71,6 +71,9 @@ ADSR envRim(3::ms , 90::ms , 0 , 160::ms) => blackhole;
 
 0.0 => float bgColor;
 
+// the textDelay
+0.0 => float textSize;
+
 if ( !AmIOpen ) { me.exit(); }
 
 fun update() {
@@ -85,13 +88,17 @@ fun update() {
 MidiMsg msg;
 
 fun void parseMIDI(MidiMsg msg) {
-  // global delay time
 
+  
+// filter cutoff
 if (msg.data1 == 184 && msg.data2 == 21) {
   (msg.data3  - 64 )/ 2.0 => torusX;
   (msg.data3 - 63) / 127.0 => cameraZ;
-  
+  <<< "cane" >>>;
+ 
 }
+
+
 
 //  ############ midi note out on channel 1 (kick)
 if (msg.data1 == 144) {
@@ -462,6 +469,11 @@ while (true) {
     cyl.sca(@(0.7 * envPerc.value() , 0.7 * envPerc.value(), 0.8 * envPerc.value()));
     // polyhed is for rim
     polyhed.sca(@(0.5 * envRim.value() , 0.5 * envRim.value() , 0.5  * envRim.value() ));
+
+
+    // text
+    text.sca(@(heat.delayAmtValue , heat.delayAmtValue ,  heat.delayAmtValue ));
+    text.antialias(heat.delayTimeValue);
     
      // draw UI
      
