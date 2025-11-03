@@ -86,15 +86,16 @@ fun update() {
 
 // the MIDI message & the MIDI function
 MidiMsg msg;
-
+0 => float randCol;
 fun void parseMIDI(MidiMsg msg) {
 
-  
+// every time a message is received , randcolor to the text
+Math.round(Math.randomf()) => randCol;
 // filter cutoff
 if (msg.data1 == 184 && msg.data2 == 21) {
   (msg.data3  - 64 )/ 2.0 => torusX;
   (msg.data3 - 63) / 127.0 => cameraZ;
-  <<< "cane" >>>;
+
  
 }
 
@@ -507,6 +508,8 @@ while (true) {
     text.antialias(heat.delayTimeValue);
     text.spacing(0.718 - heat.delayFbValue);
     text.rotY(heat.cutoffValue / 2);
+    
+    text.color(@(randCol , randCol , randCol));
     
      // draw UI
      
