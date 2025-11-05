@@ -42,9 +42,9 @@ fun void parseMIDI(ZdMidiMsg msg){
 
         // delayTime
         if (msg.data2 == 107)
-        { (msg.data3  / 3.0) => delayTimeValue; } 
+        { (msg.data3  / 0.9) => delayTimeValue; } 
 
-        // delayTime
+        // delay feedback
         if (msg.data2 == 110)
         { Math.map(msg.data3, 0 , 127 , 0 , 0.300 ) => delayFbValue; } 
     }

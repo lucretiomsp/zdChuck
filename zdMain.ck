@@ -59,6 +59,7 @@ ADSR envRim(3::ms , 90::ms , 0 , 160::ms) => blackhole;
 
 // bass
 0.0 => float bassVel;
+0.0 => float voxWave;
 
 // vox
 0.0 => float voxVel;
@@ -75,6 +76,16 @@ ADSR envRim(3::ms , 90::ms , 0 , 160::ms) => blackhole;
 0.0 => float textSize;
 
 if ( !AmIOpen ) { me.exit(); }
+
+// update the ggs according to their waveforms
+fun void updateWaves()
+{
+  while(true) {
+12 * envVox.value() *  Math.fabs(vox.last()) => voxWave;
+((60/139.9)  /4.0 )::second => now;
+  }
+}
+spork ~updateWaves();
 
 fun update() {
   //  GG.scene().backgroundColor(Color.BLACK);
@@ -261,10 +272,7 @@ if (msg.data1 == 137) {
  
   envPerc.keyOff();
 }
-
-
 }
-
 
 fun void receiveMIDI() {
   while( true) {
@@ -290,7 +298,8 @@ fun void receiveMIDI() {
 
 // the window
 GWindow.title("Zero Degrees - ADC25 - Bristol");
-GWindow.windowed(600 , 900);
+GWindow.windowed(600 , 1100);
+GWindow.opacity(1.0);
 
 
 // ###############################
@@ -419,7 +428,7 @@ did everyone in Bristol, as soon as they got wind of the port we sailed for— t
 "
 );
 
-text.antialias(5); // delay time
+text.antialias(70); // delay time
 text.color(@(1 , 1 , 1 , 1.4)); 
 text.sca(@(2 , 2 , 2));
 
@@ -487,8 +496,8 @@ while (true) {
 
     // susy is the voice
     
-
-    susy.sca(@(envVox.value() , envVox.value()  , envVox.value() ));
+    // envVox.value() => voxWave;
+    susy.sca(@(voxWave , voxWave , voxWave));
 
     // knot is the pad
     knot.rotX(heat.cutoffValue);
@@ -513,7 +522,7 @@ while (true) {
     
      // draw UI
      
-     
+  /*   
    if (UI.begin("ZD GUI")) {  // draw a UI window called "Tutorial"
       // scenegraph view of the current scene 
       UI.scenegraph(GG.scene()); 
@@ -521,5 +530,5 @@ while (true) {
 
    
    UI.end(); // end of UI window, must match UI.begin(...)
-   
+   */
 }
