@@ -438,7 +438,7 @@ text.font("chugl:proggy-tiny");
 
 // camera
 GG.camera().orthographic();
-
+0.0 => float cameraMovement;
 
 fun void play() {}
 spork ~ receiveMIDI();
@@ -454,8 +454,10 @@ while (true) {
     // background
     // GG.scene().backgroundColor(@(0 , 0  , Math.random2f(0.1 , 0.98)));
     //camera
-
-    // GG.camera().rot(@(-0.3, 0.1 , cameraZ));
+     
+     1 - (envPad.value() ) => cameraMovement;
+     GG.camera().rotZ(pad.last());
+     GG.camera().sca(@(1 , 1 , cameraMovement));
 
     //torus
     torus.rotY(torusRotY);
@@ -508,6 +510,7 @@ while (true) {
     bird.rotY(heat.cutoffValue);
     // cyl is for perc.
     cyl.sca(@(0.7 * envPerc.value() , 0.7 * envPerc.value(), 0.8 * envPerc.value()));
+    cyl.color(@(0.9 , perc.getSampleIndex() / 36.0 , 1));
     // polyhed is for rim
     polyhed.sca(@(0.5 * envRim.value() , 0.5 * envRim.value() , 0.5  * envRim.value() ));
 

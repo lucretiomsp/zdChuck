@@ -8,6 +8,7 @@ public class ZdSampler extends Chugraph {
     0.4 => smplPl.gain;
     1 => smplPl.rate;
     0 => int numSamples;
+    0 => int sampleIndex;
 
 string files[3];
 string filePrefix;
@@ -16,6 +17,11 @@ string filePrefix;
 
 fun SndBuf getSmplPl() {
     return smplPl;
+}
+
+fun int getSampleIndex() {
+
+    return sampleIndex;
 }
 fun ZdSampler (int ch , string fileDir) { 
     ch => midiChannel;
@@ -48,7 +54,7 @@ env.keyOff();
 /// cc19 changes index
 if (msg.data1 == 175 + midiChannel && msg.data2 == 19) {
     filePrefix + files[msg.data3 % numSamples] => smplPl.read;
-    
+    msg.data3 => sampleIndex;
    // <<< files[msg.data3 % 3 ]  >>>;  
 }
 }
