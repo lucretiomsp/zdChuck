@@ -1,4 +1,5 @@
 // Domenico Cipriani @ 2025 
+@import "stringSortFunc.ck";
 
 public class ZdSampler extends Chugraph {
     ADSR env;
@@ -21,7 +22,7 @@ fun ZdSampler (int ch , string fileDir) {
     fileDir + "/" => filePrefix ;
     FileIO dir;
     dir.open(fileDir, FileIO.READ);
-    dir.dirList() @=> files;
+    AlphaBetaSort.sort(dir.dirList()) @=> files;
     filePrefix + files[0] => smplPl.read; 
     0 => smplPl.pos;
     // <<< dir.dirList()[1] >>>;
