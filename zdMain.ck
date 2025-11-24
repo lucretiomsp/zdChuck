@@ -1,5 +1,6 @@
 // import multiSampler
 @import "ZeroSampler.ck";
+@import "ZdLoopPlayer.ck";
 @import "heatFXmin.ck";
 
 //my 3dModels
@@ -23,7 +24,11 @@ ZdSampler oh(6 , me.dir() + "samples/oh") => dac;
 ZdSampler pad(7 , me.dir() + "samples/pad") => dac;
 ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
 ZdSampler perc(10 , me.dir() + "samples/percs") => dac;
+[174.0 , 180.0 , 180.0 , 172.0] @=> float loopBpms [];
+ZdLoopPlayer loop( 11 , me.dir() + "samples/loops" , loopBpms ) => dac;
+174 => loop.setRates;
 Clarinet renzo  => dac ; // channel 8
+
 
 // the levels
 0.5 => ch.gain;
@@ -59,13 +64,14 @@ ADSR envRim(3::ms , 90::ms , 0 , 160::ms) => blackhole;
 
 // bass
 0.0 => float bassVel;
-0.0 => float voxWave;
+0.0 => float bassWave;
 
 // vox
 0.0 => float voxVel;
-
+0.0 => float voxWave;
 // pad
 0.0 => float padVel;
+0.0 => float padWave;
 
 // camera
 0.0 => float cameraZ;
@@ -82,7 +88,9 @@ fun void updateWaves()
 {
   while(true) {
 12 * envVox.value() *  Math.fabs(vox.last()) => voxWave;
-((60/139.9)  /4.0 )::second => now;
+bass.last() => bassWave;
+pad.last() * 0.6=> padWave;
+((60/143.8)  /4.0 )::second => now;
   }
 }
 spork ~updateWaves();
@@ -291,6 +299,7 @@ fun void receiveMIDI() {
   msg => vox.midiIn;
   msg => rim.midiIn;
   msg => perc.midiIn;
+  msg => loop.midiIn;
 
   }
   }
@@ -456,8 +465,9 @@ while (true) {
     //camera
      
      1 - (envPad.value() ) => cameraMovement;
-     GG.camera().rotZ(pad.last());
+     GG.camera().rotZ(padWave);
      GG.camera().sca(@(1 , 1 , cameraMovement));
+     GG.camera().rotX(bassWave);
 
     //torus
     torus.rotY(torusRotY);
