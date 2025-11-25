@@ -15,7 +15,7 @@ string filePrefix;
 60 => int note;
 1 => int midiChannel;
 120.0 => float performanceBpm;
-float rates[4];
+float rates[3];
 float originalBpms[];
 
 fun SndBuf getSmplPl() {
@@ -39,21 +39,28 @@ fun ZdLoopPlayer (int ch , string fileDir , float oBpm []) {
     <<< "ZdLoopPlayer num of samples : " ,  dir.dirList().size() >>>;
     <<< "File name : " , filePrefix + files[0] >>>;
     oBpm @=> originalBpms;
+    rates.size(oBpm.size());
 }
 
 // implememt how to change index!
 fun void setRates(float actualBpm)
 {
+   
    for (0 => int i; i < originalBpms.size() ; i ++)
    {
-    performanceBpm / originalBpms[i] => rates[i];
-    rates[sampleIndex] => smplPl.rate;
+    // <<< "original BPMS : " , originalBpms[i] >>>;
+    actualBpm / originalBpms[i] => rates[i];
+    <<< "new rates" , rates[i] >>>;
    }
+    rates[sampleIndex] => smplPl.rate;
 }
 
 fun void midiIn(MidiMsg msg) {
 if (msg.data1 == (143 + midiChannel)) {
-    1 => smplPl.rate;
+     rates[sampleIndex] => smplPl.rate;
+    // 1 => smplPl.rate;
+     <<< "LOOPER RATE : " , smplPl.rate() >>> ;
+     <<< "SAMPLE INDEX: " , sampleIndex >>>;
     0 => smplPl.pos;
     env.keyOn();
     

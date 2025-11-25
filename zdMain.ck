@@ -3,16 +3,27 @@
 @import "ZdLoopPlayer.ck";
 @import "heatFXmin.ck";
 
+
+
 //my 3dModels
 GModel lighthouse(me.dir() + "3dModels/lighthouse.obj");
 GModel bird(me.dir() + "3dModels/12214_Bird_v1max_l3.obj");
 
-
+// MIDI RECIEVERS
 MidiIn midiReceiver;
 midiReceiver.open( 1 ) => int AmIOpen;
 // the heat
 HeatFXInput heat;
 
+// ###########################################
+// create OSC receiver
+OscIn oin;
+// create OSC message
+OscMsg oscMsg;
+// use port 6449 (or whatever)            ####
+57120 => oin.port;
+oin.addAddress( "/performanceBPM" );
+// ###########################################
 
 // the instruments
 ZdSampler bass(3 , me.dir() + "samples/bass") => dac;
@@ -222,9 +233,6 @@ if (msg.data1 == 133) {
 // ############ midi note out on channel 7 (oh)
 if (msg.data1 == 150) {
   1 => envPad.keyOn;
-
-
-
 }
 
 if (msg.data1 == 134) {
@@ -236,9 +244,7 @@ if (msg.data1 == 134) {
 // ############ midi note out on channel 8 (clarinet renzo)
 if (msg.data1 == 151) {
  //noteOn
-  Std.mtof(msg.data2)  => renzo.freq;
-  
-    
+  Std.mtof(msg.data2)  => renzo.freq; 
     Math.random2f( 0, 9 ) => renzo.vibratoFreq;
     0.27 => renzo.noteOn;
     1 => envLead.keyOn;
@@ -300,12 +306,30 @@ fun void receiveMIDI() {
   msg => rim.midiIn;
   msg => perc.midiIn;
   msg => loop.midiIn;
+  }
+  }
 
-  }
-  }
 }
 
-// the window
+fun void receiveOSC()
+{
+  <<< "CHIAMA RECEIVE OSC" >>>;
+  while(true) 
+  {
+    // wait for event to arrive
+    oin => now;
+    while (oin.recv(oscMsg)) {
+      <<< "OSC MESSAGE RECEIVED" >>>;
+      oscMsg.getFloat(0) => loop.setRates;
+      <<< "performance BPM : " , oscMsg.getFloat(0) >>> ;    
+    }
+  }
+}
+spork ~receiveOSC();
+//######################################
+// the window                       ####
+//######################################
+
 GWindow.title("Zero Degrees - ADC25 - Bristol");
 GWindow.windowed(600 , 1100);
 GWindow.opacity(1.0);
