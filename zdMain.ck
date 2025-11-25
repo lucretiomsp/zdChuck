@@ -35,9 +35,9 @@ ZdSampler oh(6 , me.dir() + "samples/oh") => dac;
 ZdSampler pad(7 , me.dir() + "samples/pad") => dac;
 ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
 ZdSampler perc(10 , me.dir() + "samples/percs") => dac;
-[174.0 , 180.0 , 180.0 , 172.0] @=> float loopBpms [];
-ZdLoopPlayer loop( 11 , me.dir() + "samples/loops" , loopBpms ) => dac;
-174 => loop.setRates;
+[174.0 , 180.0 , 180.0 , 172.0 , 170.0] @=> float loopBpms [];
+ZdLoopPlayer drumLoop( 11 , me.dir() + "samples/drumLoops" , loopBpms ) => dac;
+174 => drumLoop.setRates;
 Clarinet renzo  => dac ; // channel 8
 
 
@@ -305,7 +305,7 @@ fun void receiveMIDI() {
   msg => vox.midiIn;
   msg => rim.midiIn;
   msg => perc.midiIn;
-  msg => loop.midiIn;
+  msg => drumLoop.midiIn;
   }
   }
 
@@ -320,7 +320,7 @@ fun void receiveOSC()
     oin => now;
     while (oin.recv(oscMsg)) {
       <<< "OSC MESSAGE RECEIVED" >>>;
-      oscMsg.getFloat(0) => loop.setRates;
+      oscMsg.getFloat(0) => drumLoop.setRates;
       <<< "performance BPM : " , oscMsg.getFloat(0) >>> ;    
     }
   }
