@@ -34,7 +34,7 @@ fun ZdSampler (int ch , string fileDir) {
     // <<< dir.dirList()[1] >>>;
     dir.dirList().size() => numSamples;
     <<< "ZdSampler num of samples : " ,  dir.dirList().size() >>>;
-    <<< "File name : " , filePrefix + files[0] >>>;
+    // <<< "File name : " , filePrefix + files[0] >>>;
 }
 
 // implememt how to change index!

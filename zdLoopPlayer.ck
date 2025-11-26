@@ -1,4 +1,8 @@
 // Domenico Cipriani @ 2025 
+
+// to use the ZdLoopPlayer your audiofiles must be named terminating with |(pipe)<bpm> as in
+// myBassLoop|128.wav
+
 @import "stringSortFunc.ck";
 
 public class ZdLoopPlayer extends Chugraph {
@@ -10,13 +14,34 @@ public class ZdLoopPlayer extends Chugraph {
     0 => int numSamples;
     0 => int sampleIndex;
 
-string files[3];
+string files[9];
 string filePrefix;
 60 => int note;
 1 => int midiChannel;
-120.0 => float performanceBpm;
-float rates[3];
-float originalBpms[];
+170.0 => float performanceBpm;
+float rates[9];
+float originalBpms[9];
+
+// #######
+
+fun float getBpmFromFileName(string fileName)
+{
+  fileName.find("|") => int pipePosition;
+  fileName.substring(pipePosition + 1).toFloat() => float bpm;
+
+  return bpm; 
+}
+
+fun void fillOriginalBpms (string files [])
+{
+  for ( 0=> int i; i < files.size() ; i++) 
+  {
+    originalBpms.size(files.size());
+    getBpmFromFileName(filePrefix + files[i]) => originalBpms[i];
+    <<< files[i] , " original bpm :" , originalBpms[i] >>>;
+  }
+}
+// ####
 
 fun SndBuf getSmplPl() {
     return smplPl;
@@ -26,6 +51,9 @@ fun int getSampleIndex() {
 
     return sampleIndex;
 }
+
+// CONSTRUCTOR ##########################################################################################
+
 fun ZdLoopPlayer (int ch , string fileDir , float oBpm []) { 
     ch => midiChannel;
     fileDir + "/" => filePrefix ;
@@ -37,10 +65,15 @@ fun ZdLoopPlayer (int ch , string fileDir , float oBpm []) {
     // <<< dir.dirList()[1] >>>;
     dir.dirList().size() => numSamples;
     <<< "ZdLoopPlayer num of samples : " ,  dir.dirList().size() >>>;
-    <<< "File name : " , filePrefix + files[0] >>>;
+    // <<< "File name : " , filePrefix + files[0] >>>;
+    <<< "BPM of first sample : " , getBpmFromFileName( (filePrefix + files[0])) >>>;
     oBpm @=> originalBpms;
-    rates.size(oBpm.size());
+    
+    fillOriginalBpms(files);
+    rates.size(originalBpms.size());
 }
+
+// ###################################################################################################
 
 // implememt how to change index!
 fun void setRates(float actualBpm)
@@ -49,7 +82,8 @@ fun void setRates(float actualBpm)
    for (0 => int i; i < originalBpms.size() ; i ++)
    {
     // <<< "original BPMS : " , originalBpms[i] >>>;
-    actualBpm / originalBpms[i] => rates[i];
+    actualBpm => performanceBpm;
+    performanceBpm / originalBpms[i] => rates[i];
     <<< "new rates" , rates[i] >>>;
    }
     rates[sampleIndex] => smplPl.rate;
@@ -59,8 +93,8 @@ fun void midiIn(MidiMsg msg) {
 if (msg.data1 == (143 + midiChannel)) {
      rates[sampleIndex] => smplPl.rate;
     // 1 => smplPl.rate;
-     <<< "LOOPER RATE : " , smplPl.rate() >>> ;
-     <<< "SAMPLE INDEX: " , sampleIndex >>>;
+    // <<< "LOOPER RATE : " , smplPl.rate() >>> ;
+    // <<< "SAMPLE INDEX: " , sampleIndex >>>;
     0 => smplPl.pos;
     env.keyOn();
     
