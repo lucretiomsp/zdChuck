@@ -12,7 +12,7 @@ public class ZdLoopPlayer extends Chugraph {
     0.4 => smplPl.gain;
     1 => smplPl.rate;
     0 => int numSamples;
-    0 => int sampleIndex;
+    1 => int sampleIndex;
 
 string files[9];
 string filePrefix;
@@ -71,6 +71,7 @@ fun ZdLoopPlayer (int ch , string fileDir ) {
     
     fillOriginalBpms(files);
     rates.size(originalBpms.size());
+    setRates(174);
 }
 
 // ###################################################################################################
@@ -107,7 +108,7 @@ env.keyOff();
 /// cc19 changes index
 if (msg.data1 == 175 + midiChannel && msg.data2 == 19) {
     filePrefix + files[msg.data3 % numSamples] => smplPl.read;
-    msg.data3 => sampleIndex;
+    Math.min(msg.data3 , files.size())  => sampleIndex;
    // <<< files[msg.data3 % 3 ]  >>>;  
 }
 }

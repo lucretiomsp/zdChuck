@@ -40,12 +40,10 @@ ZdSampler perc(10 , me.dir() + "samples/percs") => dac;
 ZdLoopPlayer drumLoop( 11 , me.dir() + "samples/drumLoops" ) => dac;
 174 => drumLoop.setRates;
 
-
+ZdLoopPlayer percLoop( 12 , me.dir() + "samples/percLoops" ) => dac;
 ZdLoopPlayer bassLoop( 13 , me.dir() + "samples/bassLoops"  ) => dac;
 
-ZdLoopPlayer percLoop( 12 , me.dir() + "samples/percLoops" ) => dac;
-
-ZdLoopPlayer chordLoop( 14 , me.dir() + "samples/chordLoops"   ) => dac;
+ZdLoopPlayer chordLoop( 14 , me.dir() + "samples/padLoops"   ) => dac;
 
 ZdLoopPlayer synthLoop( 14 , me.dir() + "samples/synthLoops"   ) => dac;
 
@@ -241,7 +239,6 @@ if (msg.data1 == 133) {
   0.0 => openCol;
 }
 
-
 // ############ midi note out on channel 7 (oh)
 if (msg.data1 == 150) {
   1 => envPad.keyOn;
@@ -318,6 +315,10 @@ fun void receiveMIDI() {
   msg => rim.midiIn;
   msg => perc.midiIn;
   msg => drumLoop.midiIn;
+  msg => percLoop.midiIn;
+  msg => bassLoop.midiIn;
+  msg => synthLoop.midiIn;
+  msg => chordLoop.midiIn;
   }
   }
 
@@ -333,6 +334,10 @@ fun void receiveOSC()
     while (oin.recv(oscMsg)) {
       <<< "OSC MESSAGE RECEIVED" >>>;
       oscMsg.getFloat(0) => drumLoop.setRates;
+      oscMsg.getFloat(0) => percLoop.setRates;
+      oscMsg.getFloat(0) => bassLoop.setRates;
+      oscMsg.getFloat(0) => synthLoop.setRates;
+      oscMsg.getFloat(0) => chordLoop.setRates;
       <<< "performance BPM : " , oscMsg.getFloat(0) >>> ;    
     }
   }

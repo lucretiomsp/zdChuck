@@ -54,7 +54,7 @@ env.keyOff();
 /// cc19 changes index
 if (msg.data1 == 175 + midiChannel && msg.data2 == 19) {
     filePrefix + files[msg.data3 % numSamples] => smplPl.read;
-    msg.data3 => sampleIndex;
+    Math.min(msg.data3 , files.size()) => sampleIndex;
    // <<< files[msg.data3 % 3 ]  >>>;  
 }
 }
