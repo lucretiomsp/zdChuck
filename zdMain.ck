@@ -37,18 +37,18 @@ ZdSampler vox(9 , me.dir() + "samples/vox") => dac;
 ZdSampler perc(10 , me.dir() + "samples/percs") => dac;
 
 [174.0 , 180.0 , 180.0 , 172.0 , 170.0] @=> float drumLoopBpms [];
-ZdLoopPlayer drumLoop( 11 , me.dir() + "samples/drumLoops" , drumLoopBpms ) => dac;
+ZdLoopPlayer drumLoop( 11 , me.dir() + "samples/drumLoops" ) => dac;
 174 => drumLoop.setRates;
 
-/*
-ZdLoopPlayer percLoop( 12 , me.dir() + "samples/percLoops" , percLoopBpms ) => dac;
 
-ZdLoopPlayer bassLoop( 13 , me.dir() + "samples/bassLoops" , bassLoopBpms ) => dac;
+ZdLoopPlayer bassLoop( 13 , me.dir() + "samples/bassLoops"  ) => dac;
 
-ZdLoopPlayer chordLoop( 14 , me.dir() + "samples/chordLoops" , chordLoopBpms ) => dac;
+ZdLoopPlayer percLoop( 12 , me.dir() + "samples/percLoops" ) => dac;
 
-ZdLoopPlayer synthLoop( 14 , me.dir() + "samples/synthLoops" , synthLoopBpms ) => dac;
-*/
+ZdLoopPlayer chordLoop( 14 , me.dir() + "samples/chordLoops"   ) => dac;
+
+ZdLoopPlayer synthLoop( 14 , me.dir() + "samples/synthLoops"   ) => dac;
+
 
 Clarinet renzo  => dac ; // channel 8
 

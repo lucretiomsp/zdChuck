@@ -54,7 +54,7 @@ fun int getSampleIndex() {
 
 // CONSTRUCTOR ##########################################################################################
 
-fun ZdLoopPlayer (int ch , string fileDir , float oBpm []) { 
+fun ZdLoopPlayer (int ch , string fileDir ) { 
     ch => midiChannel;
     fileDir + "/" => filePrefix ;
     FileIO dir;
@@ -67,7 +67,7 @@ fun ZdLoopPlayer (int ch , string fileDir , float oBpm []) {
     <<< "ZdLoopPlayer num of samples : " ,  dir.dirList().size() >>>;
     // <<< "File name : " , filePrefix + files[0] >>>;
     <<< "BPM of first sample : " , getBpmFromFileName( (filePrefix + files[0])) >>>;
-    oBpm @=> originalBpms;
+   // oBpm @=> originalBpms;
     
     fillOriginalBpms(files);
     rates.size(originalBpms.size());
