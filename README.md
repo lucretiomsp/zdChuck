@@ -10,13 +10,7 @@ PerformerMIDI >>> factoryChannels
 
 ## Example Playground script
 ```smalltalk
-PortMidi  traceAllDevices .
-
-mout := MIDISender new.
-
-mout  openWithDevice: 'IAC Driver Bus 1'. 
-
-p := Performance forMIDI.
+p := Performance forMIDIDevice: 'IAC Driver Bus 1'.
 
 '8100' hexBeat  to: #kick .
 '0808' hexBeat to: #snare.
