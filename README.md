@@ -14,11 +14,9 @@ PortMidi  traceAllDevices .
 
 mout := MIDISender new.
 
-mout openWithDevice: 4.
-
+mout  openWithDevice: 'IAC Driver Bus 1'. 
 
 p := Performance forMIDI.
-
 
 '8100' hexBeat  to: #kick .
 '0808' hexBeat to: #snare.
