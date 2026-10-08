@@ -24,9 +24,7 @@ p := Performance forMIDIDevice: 'IAC Driver Bus 1'.
 
 ```
 
-p solo: #vox.
-p mute: #bass.
-p solo: #lead.
+
 p freq: 144 bpm.
 p playFor: 16 bars.
 p stop.
