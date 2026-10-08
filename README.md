@@ -23,7 +23,7 @@ p := Performance forMIDI.
 '8100' hexBeat  to: #kick .
 '0808' hexBeat to: #snare.
 '0140' hexBeat to: #rim.
- #quavers asRhythm to: #ch.
+#quavers asRhythm to: #ch.
 #upbeats asRhythm to: #oh.
 '60/32 , 63/32' asDirtNotes to: #pad.
 '48/16' asDirtNotes to: #vox.
