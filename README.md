@@ -17,22 +17,18 @@ mout := MIDISender new.
 mout openWithDevice: 4.
 
 
-p := Performance uniqueInstance .
-p performer: PerformerMIDI new
+p := Performance forMIDI.
 
 
-'8100' hexBeat midiCh: 1 to: #kick .
-#downbeats asRhythm midiCh: 1 to: #kick.
-'0808' hexBeat midiCh: 2 to: #snare.
-'0140' hexBeat midiCh: 4 to: #rim.
-#quavers asRhythm midiCh:  5 to: #ch.
-#upbeats asRhythm midiCh: 6 to: #oh.
-'60/32' asDirtNotes midiCh: 7 to: #pad; gateTimes: 1.
-'60/16' asDirtNotes midiCh: 9 to: #vox.
-'60/4 , 60/4 , 48/56' asDirtNotes midiCh:  3 to: #bass.
-'45/16 , 56/ 16 , 65 /16 , 72/16' asDirtNotes midiCh: 8 to: #lead.
-#rumba asRhythm index: '1 , 2 , 3'; midiCh: 10 to: #perc.
-"bass is lighthouse dimension Y"
+'8100' hexBeat  to: #kick .
+'0808' hexBeat to: #snare.
+'0140' hexBeat to: #rim.
+ #quavers asRhythm to: #ch.
+#upbeats asRhythm to: #oh.
+'60/32 , 63/32' asDirtNotes to: #pad.
+'48/16' asDirtNotes to: #vox.
+'60/4 , 60/4 , 48/56' asDirtNotes to: #bass.
+'45 , 57 , 72' asDirtNotes  to: #lead.
 
 ```
 
